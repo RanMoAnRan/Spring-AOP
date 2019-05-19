@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/aop
+      http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+
+    <!--装配AccountServiceImpl到容器中-->
+    <bean id="accountService1" class="com.jing.aoptest.impl.AccountServiceImpl"></bean>
+
+
+    <!--装配Logger到容器中-->
+    <bean id="logger" class="com.jing.aoptest.Logger"></bean>
+
+   <aop:config>
+
+       <!-- 配置切入点表达式方便被引用 -->
+       <aop:pointcut expression=" execution(* com.jing.aoptest.impl.*.*(..))" id="pt1"/>
+
+
+       <!-- 配置切面
+            id：切面的唯一标识
+            ref:引用通知类
+         -->
+       <aop:aspect id="" ref="logger">
+           <!-- 配置前置通知
+                    method:配置通知方法（即具体进行增强的方法）
+                    pointcut:配置AspectJ表达式，即将通知增强到哪个方法
+                    execution:使用AspectJ的切入点表达式
+                            execution(修饰符 返回值类型 包名.类名.方法名(参数列表))
+             -->
+           <aop:before method="printLog" pointcut-ref="pt1"></aop:before>
+           <aop:before method="printLog2" pointcut-ref="pt1"/>
+           <aop:before method="printLog3" pointcut-ref="pt1"/>
+           <!--前置通知-->
+           <aop:before method="beforePrintLog" pointcut-ref="pt1"></aop:before>
+           <!--后置通知:目标方法执行之后执行-->
+           <aop:after-returning method="afterReturningPrintLog" pointcut-ref="pt1"/>
+           <!--异常通知：目标方法发生异常时执行-->
+           <aop:after-throwing method="afterThrowingPrintLog" pointcut-ref="pt1"></aop:after-throwing>
+           <!--最终通知：不管有没有异常，最终都会执行-->
+           <aop:after method="afterPrintLog" pointcut-ref="pt1"></aop:after>
+
+
+           <aop:around method="around" pointcut-ref="pt1"></aop:around>
+
+       </aop:aspect>
+   </aop:config>
+</beans>
